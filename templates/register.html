@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{#{% import 'bootstrap/wtf.html' as wtf %}#}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename="css/register.css") }}">
+{% endblock head %}
+{% block page_body %}
+    <header>
+        <div class="page-header">
+            <div class="container">
+                <h1 class="text-center">{{ title }}</h1>
+            </div>
+        </div>
+    </header>
+    <div class="container">
+        {% for message in get_flashed_messages() %}
+            <div class="alert-info">{{ message }}</div>
+        {% endfor %}
+        {#        {{ wtf.quick_form(form) }}#}
+        <form action="{{ url_for("register") }}" method="post" class="form-container" role="form">
+            {{ form.hidden_tag() }}
+            {% if form.errors.username %}
+                <div class="form-group has-error required">
+                    {{ form.username.label(class="control-label") | safe }}
+                    {{ form.username(class="form-control", required=True) }}
+                    {% for error in form.errors.username %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="form-group required">
+                    {{ form.username.label(class="control-label") | safe }}
+                    {{ form.username(class="form-control", required=True) }}
+                </div>
+            {% endif %}
+            {% if form.errors.email %}
+                <div class="form-group has-error required">
+                    {{ form.email.label(class="control-label") | safe }}
+                    {{ form.email(class="form-control", required=True) }}
+                    {% for error in form.errors.email %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.email.label(class="control-label") | safe }}
+                {{ form.email(class="form-control", required=True) }}
+            {% endif %}
+            {% if form.errors.password %}
+                <div class="form-group has-error required">
+                    {{ form.password.label(class="control-label") | safe }}
+                    {{ form.password(class="form-control", required=True) }}
+                    {% for error in form.errors.password %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="form-group required">
+                    {{ form.password.label(class="control-label") | safe }}
+                    {{ form.password(class="form-control", required=True) }}
+                </div>
+            {% endif %}
+
+            {% if form.errors.password1 %}
+                <div class="form-group has-error required">
+                    {{ form.password1.label(class="control-label") | safe }}
+                    {{ form.password1(class="form-control", required=True) }}
+                    {% for error in form.errors.password1 %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="form-group required">
+                    {{ form.password1.label(class="control-label") | safe }}
+                    {{ form.password1(class="form-control", required=True) }}
+                </div>
+            {% endif %}
+
+            {% if form.errors.verification_code %}
+                <div class="form-group has-error required">
+                    {{ form.verification_code.label(class="control-label") | safe }}
+                    <div class="clearfix">
+                        <img src="data:;base64,{{ base64.b64encode(code_img) }}" alt="codePic"
+                             class="img-rounded pull-right img-responsive" title="点击刷新验证码" style="cursor:pointer;"
+                             id="codePic2">
+                        {{ form.verification_code(class="form-control", required=True, style="max-width:40%") }}
+                    </div>
+                    {% for error in form.errors.verification_code %}
+                        <p class="help-block">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="form-group required">
+                    {{ form.verification_code.label(class="control-label") | safe }}
+                    <div class="clearfix">
+                        <img src="data:;base64,{{ base64.b64encode(code_img) }}" alt="codePic"
+                             class="img-rounded pull-right img-responsive" title="点击刷新验证码" style="cursor:pointer;"
+                             id="codePic2">
+                        {{ form.verification_code(class="form-control", required=True, style="max-width:40%") }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {{ form.submit(class="btn btn-info submit pull-right") }}
+        </form>
+    </div>
+
+{% endblock page_body %}
+{% block footer %}
+    {{ super() }}
+    <script type="text/javascript" src="{{ url_for("static", filename="js/register.js") }}"></script>
+
+{% endblock footer %}
