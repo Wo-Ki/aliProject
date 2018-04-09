@@ -1,34 +1,40 @@
-<nav class="navbar navbar-default navbar-static-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button aria-controls="navbar"
-                    aria-expanded="false"
-                    class="navbar-toggle collapsed"
-                    data-target="#7bc75dbef69e41ff2452de70079c8ece1320ea7c"
-                    data-toggle="collapse" type="button">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+{#<nav class="navbar navbar-default navbar-static-top">#}
+    <nav class="navbar navbar-expand-sm navbar-light bg-light navbar-dark">
+{#    <div class="container-fluid">#}
+{#        <div class="navbar-header">#}
+{#            <button aria-controls="navbar"#}
+{#                    aria-expanded="false"#}
+{#                    class="navbar-toggle collapsed"#}
+{#                    data-target="#7bc75dbef69e41ff2452de70079c8ece1320ea7c"#}
+{#                    data-toggle="collapse" type="button">#}
+{#                <span class="sr-only">Toggle navigation</span>#}
+{#                <span class="icon-bar"></span>#}
+{#                <span class="icon-bar"></span>#}
+{#                <span class="icon-bar"></span>#}
+{#            </button>#}
             <span class="navbar-brand">Icon</span>
-        </div>
+    	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    			<span class="navbar-toggler-icon"></span>
+
+
+  			</button>
+{#        </div>#}
         <div class="navbar-collapse collapse"
-             id="7bc75dbef69e41ff2452de70079c8ece1320ea7c">
-            <ul class="nav navbar-nav">
-                <li {% if url_for('index') is current_link %}class="active"{% endif %}>
-                    <a href="{{ url_for('index') }}" title="主页">主页</a>
+             id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li {% if url_for('index') is current_link %}class="active nav-item"{% endif %}>
+                    <a href="{{ url_for('index') }}" class="nav-link" title="主页">主页</a>
                 </li>
-                <li {% if url_for('about') is current_link %}class="active"{% endif %}>
-                    <a href="{{ url_for('about') }}" title="关于">关于</a>
+                <li {% if url_for('about') is current_link %}class="active nav-item"{% endif %}>
+                    <a href="{{ url_for('about') }}" title="关于" class="nav-link">关于</a>
                 </li>
             </ul>
-            <form class="navbar-form navbar-left" action="" method="get">
-                <div class="input-group">
-                     <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+            <form class="navbar-form form-inline  navbar-left" action="" method="get">
+                <div class="input-group form-inline my-2 my-lg-0">
+                    <div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
                     <input type="text" class="form-control" placeholder="请输入关键字" name="q">
                 </div>
-                <button type="submit" class="btn btn-primary">查找</button>
+                <button type="submit" class="btn btn-primary ">查找</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
@@ -40,21 +46,22 @@
                                 src="data:;base64,{{ base64.b64encode(current_user.headPic) }}"
                                 alt="headPic"
                                 class="img-rounded img-responsive center-block pull-left"
-                        ><span class="caret"></span></a>
+                        ></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{{ url_for("publish") }}"><span class="glyphicon glyphicon-plus"></span>添加作品</a></li>
+                            <li><a href="{{ url_for("publish") }}"><span
+                                    class="glyphicon glyphicon-plus"></span>添加作品</a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-user"></span>个人首页</a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-cog"></span>设置</a></li>
                             <li><a href="#"><span class="glyphicon glyphicon-off"></span>退出</a></li>
                         </ul>
                     </li>
-                    <li><a href="{{ url_for('logout') }}">退出</a></li>
+                    <li><a href="{{ url_for('logout') }}" class="nav-link">退出</a></li>
                 {% else %}
-                    <li><a href="{{ url_for('login') }}">登录</a></li>
-                    <li><a href="{{ url_for('register') }}">注册</a></li>
+                    <li><a href="{{ url_for('login') }}" class="nav-link">登录</a></li>
+                    <li><a href="{{ url_for('register') }}" class="nav-link">注册</a></li>
                 {% endif %}
 
             </ul>
         </div>
-    </div>
+{#    </div>#}
 </nav>

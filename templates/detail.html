@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/detail.css') }}">
+{% endblock head %}
+
+{% block page_body %}
+    <header>
+        <div class="page-header">
+            <div class="container">
+                <h1 class="text-center">{{ production.title }}</h1>
+            </div>
+        </div>
+    </header>
+    <p class="text-center">
+        <span>作者: {{ production.user.username }}</span>
+        <span>时间: {{ production.create_time }}</span>
+    </p>
+    <hr>
+    <h4 class="text-center">作品集</h4>
+    <div class="clearfix" style="border: 1px solid #cccccc; border-radius: 4px;">
+        {% for image in images %}
+            <div class="col-xs-4 col-md-4"
+                 style="margin:5px 5px; ">
+
+                <img src="data:;base64,{{ base64.b64encode(image) }}" alt="hisPic" class="img-rounded  img-responsive"
+                     id=""
+                     style="margin-bottom: 5px">
+            </div>
+        {% endfor %}
+    </div>
+    <hr>
+    <br>
+    {% if  production.content %}
+        <p class="production-content form-container">{{ production.content }}</p>
+    {% else %}
+        <p class="text-center">作者未作详细</p>
+    {% endif %}
+    <br>
+    <hr>
+    {% if who == "self" %}
+        <form action="{{ url_for('detail',method='delete',id=production.id) }}" class="form-container" method=POST>
+            <button class="btn btn-danger pull-right">删除</button>
+        </form>
+    {% endif %}
+    <br>
+    <hr>
+    <h4 class="form-container">评论数: {{ production.comments | length }}</h4>
+    <hr>
+    <form action="{{ url_for("add_comment") }}" method="post" class="form-container">
+        {{ form.hidden_tag() }}
+        {% if form.errors.content %}
+            <div class="form-group has-error required">
+                {{ form.content.label(class="control-label") | safe }}
+                {{ form.content(class="form-control", required=True) }}
+                {% for error in form.errors.content %}
+                    <p class="help-block">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="form-group required">
+                {{ form.content.label(class="control-label") | safe }}
+                {{ form.content(class="form-control", required=True) }}
+            </div>
+        {% endif %}
+        <input type="hidden" name="production_id" value="{{ production.id }}">
+        <div class="form-group" style="text-align: right">
+            <button class="btn btn-primary">立即评论</button>
+        </div>
+    </form>
+    <ul class="comment-list form-container">
+        {% if production.comments | length == 0 %}
+            <p class="text-center">立刻抢沙发</p>
+        {% else %}
+            {% for comment in comments %}
+                <li>
+                    <div class="user-info">
+                        <img src="data:;base64,{{ base64.b64encode(comment.user.headPic) }}" alt="" class="avatar">
+                        <span class="username">{{ comment.user.username }}</span>
+                        <span class="create-time">{{ comment.create_time }}</span>
+                    </div>
+                    <p class="comment-content">{{ comment.content }}</p>
+                </li>
+                <hr>
+            {% endfor %}
+
+            </ul>
+        {% endif %}
+{% endblock page_body %}
+
+{% block footer %}
+    {{ super() }}
+{% endblock footer %}

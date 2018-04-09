@@ -66,11 +66,11 @@ class ProductionTable(db.Model):
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.Text)
 
-    image1 = db.Column(db.String(60), nullable=False)
-    image2 = db.Column(db.String(60))
-    image3 = db.Column(db.String(60))
-    image4 = db.Column(db.String(60))
-    image5 = db.Column(db.String(60))
+    image1 = db.Column(db.BLOB, nullable=False)
+    image2 = db.Column(db.BLOB)
+    image3 = db.Column(db.BLOB)
+    image4 = db.Column(db.BLOB)
+    image5 = db.Column(db.BLOB)
 
     price = db.Column(db.Integer, nullable=False)
     province = db.Column(db.String(50))
@@ -98,8 +98,8 @@ class CommentTable(db.Model):
     __tablename__ = "comment"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     isRead = db.Column(db.Boolean, default=False)
-
+    content = db.Column(db.Text, nullable=False)
     create_time = db.Column(db.DateTime, default=datetime.now)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    comment_id = db.Column(db.Integer, db.ForeignKey('production.id'))
+    production_id = db.Column(db.Integer, db.ForeignKey('production.id'))

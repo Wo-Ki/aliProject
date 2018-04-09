@@ -1,13 +1,13 @@
 /*!*轮播图*!*/
 
 /*div.ppt {*/
-    /*margin: 5px auto;*/
-    /*width: 80%;*/
+/*margin: 5px auto;*/
+/*width: 80%;*/
 /*}*/
 
 /*.carousel-item img {*/
-    /*max-width: 100%;*/
-    /*height: auto;*/
+/*max-width: 100%;*/
+/*height: auto;*/
 /*}*/
 
 /*!*轮播图结束*!*/
@@ -67,7 +67,7 @@ textarea {
 
 .card-group .card {
     margin: 10px;
-    box-shadow: 5px 5px 5px #888888;
+    /*box-shadow: 5px 5px 5px #888888;*/
 }
 
 .name {
@@ -86,10 +86,11 @@ div.toTop {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
+
 }
 
 .toTop a {
-    font-size: 1.5rem;
+    /*font-size: 1.5rem;*/
 }
 
 /*返回顶部结束*/
@@ -119,3 +120,18 @@ div.toTop {
 }
 
 /*!*底部结束*!*/
+
+.previewPic {
+    /*position: absolute;*/
+    /*left: 0px;*/
+    /*top: 0px;*/
+    /*width: 600px;*/
+    /*height: 400px;*/
+    /*clip: rect(10px 30px 260px 200px);*/
+    /*background-position:-82px -137px;*/
+    /*position: absolute;*/
+    /*left: 0px;*/
+    /*top: 0px;*/
+    /*clip: rect(100px 300px 300px 100px)*/
+}
+

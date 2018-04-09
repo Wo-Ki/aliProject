@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter
 # import Image, ImageDraw, ImageFont, ImageFilter
 import random
 from models import UserTable, ProductionTable, CommentTable
-from flask_login import login_user, logout_user, current_user, login_required
+from flask_login import login_user, logout_user, current_user, login_required, AnonymousUserMixin
 from flask_uploads import UploadSet, configure_uploads, IMAGES, patch_request_class
 from sqlalchemy import or_
 import base64
@@ -24,6 +24,7 @@ import os
 from io import BytesIO
 import requests
 import json
+from datetime import datetime
 
 app = Flask(__name__)
 app.config.from_object(config)
@@ -31,9 +32,10 @@ db.init_app(app)
 bootstrap = Bootstrap(app)
 login_manager.init_app(app)
 
-photos = UploadSet('photos', IMAGES)
-configure_uploads(app, photos)
-patch_request_class(app)
+
+# photos = UploadSet('photos', IMAGES)
+# configure_uploads(app, photos)
+# patch_request_class(app)
 
 
 @app.route("/index")
@@ -44,83 +46,140 @@ def index():
 
 
 @app.route('/publish', methods=["POST", "GET"])
-@app.route('/edit/<int:id>/<method>', methods=["POST", "GET"])
+@app.route('/edit/<int:id>', methods=["POST", "GET"])
 @login_required
-def publish(id=-1, method="edit"):
+def publish(id=-1):
     form = productionForm.newOrEdit()
     li = ["image1", "image2", "image3", "image4", "image5"]
     image_urls = []
     if id == -1:  # 新建
         production = ProductionTable(user_id=current_user.id)
+        method = u"新建"
+        backid = -1
     else:  # 编辑
-        production = ProductionTable.query.get_or_404(id)
+        production = ProductionTable.query.filter_by(id=id).first()
+        backid = id
+        method = u'编辑'
 
     ip = request.remote_addr
     url = "http://ip.taobao.com/service/getIpInfo.php?ip=" + ip  # 根据当前ip获取位置
     jsonData = json.loads(requests.get(url).text)
 
     if form.validate_on_submit():
-        if method == "edit":
-            for l in li:
-                image_data = request.files.get(l)
-                if image_data:
-                    setattr(production, l, image_data.filename)
-                    print "image_data.filename:", image_data.filename
-            production.title = form.title.data
-            production.content = form.content.data
-            production.city = form.city.data
-            production.province = form.province.data
-            production.price = form.price.data
-            try:
-                db.session.add(production)
-                db.session.commit()
-                image_urls = []
-                if os.path.exists(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], str(production.id))):
-                    os.removedirs(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], str(production.id)))
-                os.mkdir(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], str(production.id)))
-                for l in li:
-                    image_data = request.files.get(l)
-                    if image_data:
-                        filename = photos.save(image_data, folder=str(production.id))
-                        print "filename:",filename
-                        image_urls.append(photos.url(filename))
-                return redirect(url_for('.index'))
-            except:
-                db.session.rollback()
-                flash(u"发布失败", category="error")
+        print "id:", id
+        # for l in li:
+        #     image_data = request.files.get(l)
+        #     if image_data:
+        #         setattr(production, l, image_data.filename)
+        #         print "image_data.filename:", image_data.filename
 
-        elif method == "remove":
-            pass
-        else:
-            print "method error"
+        production.title = form.title.data
+        production.content = form.content.data
+        production.city = form.city.data
+        production.province = form.province.data
+        production.price = form.price.data
+        production.create_time = str(datetime.now())
+
+        for l in li:
+            image_data = request.files.get(l)
+            # f = BytesIO()
+            # image_data.save(f, "png")
+            # imgData = f.getvalue()
+            # image_data.close()
+            if image_data:
+                setattr(production, l, image_data.read())
+        # try:
+
+        db.session.add(production)
+        db.session.commit()
+        # if not os.path.exists(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], str(production.id))):
+        #     os.mkdir(os.path.join(app.config["UPLOADED_PHOTOS_DEST"], str(production.id)))
+        # for l in li:
+        #     image_data = request.files.get(l)
+        #     f = BytesIO()
+        #     image_data.save(f, "png")
+        #     imgData = f.getvalue()
+        #     image_data.close()
+        #
+        #     if image_data:
+        #         filename = photos.save(image_data, folder=str(production.id))
+        #         print "filename:", filename
+        #         image_urls.append(photos.url(filename))
+        return redirect(url_for('index'))
+        # except:
+        #     db.session.rollback()
+        #     flash(u"发布失败", category="error")
+
     form.title.data = production.title
     form.content.data = production.content
     form.city.data = production.city
     form.province.data = production.province
     form.price.data = production.price
+
     # form.image1.data = Image.open(os.path.join(p, str(production.image1)))
     # form.image2.data = Image.open(os.path.join(p, str(production.image2)))
     # form.image3.data = Image.open(os.path.join(p, str(production.image3)))
     # form.image4.data = Image.open(os.path.join(p, str(production.image4)))
     # form.image5.data = Image.open(os.path.join(p, str(production.image5)))
-    imagePath = os.path.join(app.config["UPLOADED_PHOTOS_DEST"], str(production.id))
+    # imagePath = os.path.join(app.config["UPLOADED_PHOTOS_DEST"], str(production.id))
+    # if id != -1:
+    #     savedImgs = os.listdir(imagePath)
+    #     for i in savedImgs:
+    #         # image_urls.append(photos.url(os.path.join(str(production.id), i)))
+    #         image_urls=
+    # print "image_urls:", image_urls
     if id != -1:
-        savedImgs = os.listdir(imagePath)
-        for i in savedImgs:
-            image_urls.append(photos.url(os.path.join(str(production.id), i)))
-    print "image_urls:", image_urls
-    return render_template("edit.html", form=form, images=image_urls)
+        for l in li:
+            if getattr(production, l):
+                image_urls.append(getattr(production, l))
+    return render_template("edit.html", form=form, images=image_urls, title=method, id=production.id)
+
+
+@app.route('/detail/<method>/<id>', methods=["POST", "GET"])
+def detail(id, method='view'):
+    if request.method == "GET":
+        who = ""
+        form = productionForm.commentForm()
+        production = ProductionTable.query.get_or_404(id)
+        comments = CommentTable.query.filter_by(production_id=id).order_by("-create_time").all()
+        if not current_user.is_anonymous:
+            if production.user_id == current_user.id:
+                who = 'self'
+
+        li = ["image1", "image2", "image3", "image4", "image5"]
+        image_urls = []
+        for l in li:
+            if getattr(production, l):
+                image_urls.append(getattr(production, l))
+        return render_template("detail.html", production=production, images=image_urls, title=u'详情', form=form,
+                               who=who, comments=comments)
+    elif request.method == "POST":
+        print "method:", method
+        if method == 'delete':
+            production = ProductionTable.query.get_or_404(id)
+            comments = CommentTable.query.filter_by(production_id=id).all()
+            for comment in comments:
+                db.session.delete(comment)
+            db.session.delete(production)
+            db.session.commit()
+        return redirect(url_for("index"))
+
+
+@app.route('/add_comment', methods=["POST"])
+@login_required
+def add_comment():
+    content = request.form.get("content")
+    production_id = request.form.get("production_id")
+    comment = CommentTable(content=content, production_id=production_id, user_id=current_user.id)
+    db.session.add(comment)
+    db.session.commit()
+    return redirect(url_for("detail", method='view', id=production_id))
 
 
 @app.route('/UserData/images/<filename>')
 def upload(filename):
     print "upload:", app.config['UPLOAD_FOLDER'], filename
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-
-@app.route('/detail/<int:id>', methods=["POST", "GET"])
-def detail(id):
-    pass
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -180,6 +239,12 @@ def register():
     code_img = getAuthPicture()
     # session['code_text'] = code_text
     return render_template("register.html", form=form, code_img=code_img, title=title)
+
+
+@app.route("/selfPage/<id>")
+def self_page(id):
+    user = UserTable.query.get_or_404(id)
+    return render_template("selfPage.html", user=user)
 
 
 @app.route("/about")

@@ -1,8 +1,40 @@
+<!--返回顶部-->
+<div class="main">
+
+    {% block main %}{% endblock %}
+    <div class="toTop"><span class="label label-default"><span class="glyphicon glyphicon-menu-up"></span></span></div>
+</div>
+
+<!--返回顶部结束-->
+<!--底部-->
+<div class="footer">
+    <ul>
+        <li>
+            <a href="">关于我们</a>
+        </li>
+        <li>
+            <a href="">共建单位</a>
+        </li>
+        <li>
+            <a href="">联系方式</a>
+        </li>
+        <li>
+            <a href="">友情链接</a>
+        </li>
+    </ul>
+    <p>©2004-2016 教育部中国大学生在线网站 版权所有 京ICP备10028400号-2 京公安网备11010502025664</p>
+</div>
+<!--底部结束-->
+
+
 <script type="text/javascript" src="{{ url_for("static", filename="js/lib/jquery-1.12.4.min.js") }}"></script>
-<script type="text/javascript" src="{{ url_for("static", filename="js/lib/bootstrap.min.js") }}"></script>
+{#<script type="text/javascript" src="{{ url_for("static", filename="js/lib/bootstrap.min.js") }}"></script>#}
+<script type="text/javascript" src="{{ url_for("static", filename="js/lib/bootstrap.min.4.0.0.js") }}"></script>
+
 <script type="text/javascript" src="{{ url_for("static", filename="js/lib/jquery-ui.min.js") }}"></script>
 <script type="text/javascript"
         src="{{ url_for("static", filename="js/lib/jquery.ui.touch-punch.min.js") }}"></script>
+<script type="text/javascript" src="//at.alicdn.com/t/font_486809_ljh2pjvbi03k57b9.js"></script>
 {#<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js"#}
 {#        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"#}
 {#        crossorigin="anonymous"></script>#}
@@ -11,3 +43,19 @@
 {#        crossorigin="anonymous"></script>#}
 {#<script type="text/javascript" src="//at.alicdn.com/t/font_486809_ljh2pjvbi03k57b9.js"></script>#}
 {#<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>#}
+
+<script type="text/javascript" >
+    $(function () {
+        $(window).scroll(function () {
+            if ($(window).scrollTop() <= 200) {
+                $(".toTop").hide();
+            }
+            else {
+                $(".toTop").show();
+            }
+        });
+        $(".toTop").click(function () {
+            $(window).scrollTop(0);
+        })
+    });
+</script>
